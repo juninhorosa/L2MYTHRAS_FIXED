@@ -75,6 +75,11 @@ public class EquipableItem extends ScriptItemHandler implements ScriptFile
 			return false;
 		}
 
+		if (player.isInTrade() || player.isInStoreMode()) // [TODO] fix bug
+		{
+			return false;
+		}
+
 		int bodyPart = item.getBodyPart();
 
 		if (bodyPart == ItemTemplate.SLOT_LR_HAND || bodyPart == ItemTemplate.SLOT_L_HAND || bodyPart == ItemTemplate.SLOT_R_HAND)
@@ -103,11 +108,11 @@ public class EquipableItem extends ScriptItemHandler implements ScriptFile
 			return false;
 		}
 
-		if (player.isAttackingNow() || player.isCastingNow())
+		if (player.isAttackingNow())
 		{
-			player.getAI().setNextAction(nextAction.EQIP, item, null, ctrl, false);
-			player.sendActionFailed();
-			return false;
+			//player.getAI().setNextAction(nextAction.EQIP, item, null, ctrl, false);
+			//player.sendActionFailed();
+			//return false;
 		}
 		
 		if (item.isEquipped())

@@ -166,34 +166,34 @@ public class UseItem extends L2GameClientPacket
 		}
 		else // Support for GM Alt+G inventory item use
 		{
-			Player owner = World.getPlayer(item.getOwnerId());
-			if (owner == null)
-				return;
-			
-			boolean success = item.getTemplate().getHandler().useItem(owner, item, _ctrlPressed);
-			if (success)
-			{
-				long nextTimeUse = item.getTemplate().getReuseType().next(item);
-				if (nextTimeUse > System.currentTimeMillis())
-				{
-					TimeStamp timeStamp = new TimeStamp(item.getItemId(), nextTimeUse, item.getTemplate().getReuseDelay());
-					owner.addSharedGroupReuse(item.getTemplate().getReuseGroup(), timeStamp);
+			if (activeChar.isGM()) {
+				Player owner = World.getPlayer(item.getOwnerId());
+				if (owner == null)
+					return;
 
-					if (item.getTemplate().getReuseDelay() > 0)
-						owner.sendPacket(new ExUseSharedGroupItem(item.getTemplate().getDisplayReuseGroup(), timeStamp));
+				boolean success = item.getTemplate().getHandler().useItem(owner, item, _ctrlPressed);
+				if (success) {
+					long nextTimeUse = item.getTemplate().getReuseType().next(item);
+					if (nextTimeUse > System.currentTimeMillis()) {
+						TimeStamp timeStamp = new TimeStamp(item.getItemId(), nextTimeUse, item.getTemplate().getReuseDelay());
+						owner.addSharedGroupReuse(item.getTemplate().getReuseGroup(), timeStamp);
+
+						if (item.getTemplate().getReuseDelay() > 0)
+							owner.sendPacket(new ExUseSharedGroupItem(item.getTemplate().getDisplayReuseGroup(), timeStamp));
+					}
 				}
+
+				// Update Inventory
+				ItemInstance[] items = owner.getInventory().getItems();
+				int questSize = 0;
+				for (ItemInstance i : items)
+					if (i.getTemplate().isQuest())
+						questSize++;
+
+				activeChar.sendPacket(new GMViewItemList(owner, items, items.length - questSize));
+				activeChar.sendPacket(new ExGMViewQuestItemList(owner, items, questSize));
+				activeChar.sendPacket(new GMHennaInfo(owner));
 			}
-			
-			// Update Inventory
-			ItemInstance[] items = owner.getInventory().getItems();
-			int questSize = 0;
-			for(ItemInstance i : items)
-				if (i.getTemplate().isQuest())
-					questSize ++;
-			
-			activeChar.sendPacket(new GMViewItemList(owner, items, items.length - questSize));
-			activeChar.sendPacket(new ExGMViewQuestItemList(owner, items, questSize));
-			activeChar.sendPacket(new GMHennaInfo(owner));
 		}
 	}
 }

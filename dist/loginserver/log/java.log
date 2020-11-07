@@ -1,9 +1,14 @@
-[21.07.17 16:35:27:830]  INFO loginserver.Config: Loaded 127 server names
-[21.07.17 16:35:28:039]  INFO loginserver.Config: Loaded whirlpool2 as default crypt.
-[21.07.17 16:35:28:532]  INFO loginserver.Config: Cached 10 KeyPairs for RSA communication
-[21.07.17 16:35:28:551]  INFO loginserver.Config: Stored 20 keys for Blowfish communication
-[21.07.17 16:35:28:565]  INFO loginserver.GameServerManager: Loaded 0 registered GameServer(s).
-[21.07.17 16:35:28:613]  INFO loginserver.AuthServer: Listening for gameservers on 127.0.0.1:9014
-[21.07.17 16:35:28:613]  INFO loginserver.AuthServer: Listening for clients on *:2106
-[21.07.17 16:35:56:188]  INFO gspackets.AuthRequest: Trying to register gameserver: 4 [127.0.0.1]
-[21.07.17 16:35:56:189]  INFO gspackets.AuthRequest: Gameserver registration successful.
+[13.05.20 22:21:02:785]  INFO loginserver.Config: Loaded 127 server names
+[13.05.20 22:21:03:131]  INFO loginserver.Config: Loaded whirlpool2 as default crypt.
+[13.05.20 22:21:04:054]  INFO loginserver.Config: Cached 10 KeyPairs for RSA communication
+[13.05.20 22:21:04:092]  INFO loginserver.Config: Stored 20 keys for Blowfish communication
+[13.05.20 22:21:04:113]  INFO loginserver.GameServerManager: Loaded 0 registered GameServer(s).
+[13.05.20 22:21:04:180]  INFO loginserver.AuthServer: Listening for gameservers on 127.0.0.1:9014
+[13.05.20 22:21:04:180]  INFO loginserver.AuthServer: Listening for clients on *:2106
+[13.05.20 22:22:04:327]  INFO gspackets.AuthRequest: Trying to register gameserver: 4 [127.0.0.1]
+[13.05.20 22:22:04:328]  INFO gspackets.AuthRequest: Gameserver registration successful.
+[13.05.20 22:41:56:475] ERROR gameservercon.GameServerCommunication: Gameserver I/O error: Удаленный хост принудительно разорвал существующее подключение
+[13.05.20 22:41:56:476]  INFO gameservercon.GameServerConnection: Connection with gameserver 4 [L2MYTHRAS-LIVE] lost.
+[13.05.20 22:41:56:476]  INFO gameservercon.GameServerConnection: Setting gameserver down.
+[13.05.20 22:42:55:027]  INFO gspackets.AuthRequest: Trying to register gameserver: 4 [127.0.0.1]
+[13.05.20 22:42:55:028]  INFO gspackets.AuthRequest: Gameserver registration successful.

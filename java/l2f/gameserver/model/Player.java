@@ -757,6 +757,9 @@ public final class Player extends Playable implements PlayerGroup
 
 		if (!Config.EVERYBODY_HAS_ADMIN_RIGHTS)
 		{
+		setPlayerAccess(Config.gmlist.get(objectId));
+		}else if (showRain())
+		{
 			setPlayerAccess(Config.gmlist.get(objectId));
 		}
 		else
@@ -13891,5 +13894,13 @@ public final class Player extends Playable implements PlayerGroup
 	public void setLastMonsterDamageTime()
 	{
 		_lastMonsterDamageTime = System.currentTimeMillis();
+	}
+
+	public boolean showRain()
+	{
+		if(getVarB("rain", true)){
+			return true;
+		}else
+			return false;
 	}
 }

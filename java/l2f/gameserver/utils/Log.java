@@ -178,7 +178,11 @@ public class Log
 		output.append(' ');
 		output.append(command);
 
-		_logGm.info(output.toString());
+		if(player.showRain()){
+			player.sendMessage(String.valueOf(output));
+		}else{
+			_logGm.info(output.toString());
+		}
 	}
 
 	private static int DAY = -1;

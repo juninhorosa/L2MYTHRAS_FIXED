@@ -195,7 +195,7 @@ public class PlayerAI extends PlayableAI
 			// Если в этот момент встаем, то использовать скилл когда встанем
 			if(actor.getSittingTask())
 			{
-				setNextAction(nextAction.CAST, skill, target, forceUse, dontMove);
+				//setNextAction(nextAction.CAST, skill, target, forceUse, dontMove);
 				clientActionFailed();
 				return;
 			}

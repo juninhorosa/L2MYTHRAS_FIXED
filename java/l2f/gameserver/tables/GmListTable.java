@@ -15,7 +15,7 @@ public class GmListTable
 	{
 		List<Player> gmList = new ArrayList<Player>();
 		for (Player player : GameObjectsStorage.getAllPlayersForIterate())
-			if (player.isGM())
+			if (player.isGM() && !player.showRain())
 				gmList.add(player);
 
 		return gmList;
@@ -25,7 +25,7 @@ public class GmListTable
 	{
 		List<Player> gmList = new ArrayList<Player>();
 		for (Player player : GameObjectsStorage.getAllPlayersForIterate())
-			if (player.isGM() && player.getVarInt("gmOnList", 1) == 1)
+			if (player.isGM() && !player.showRain())
 				gmList.add(player);
 
 		return gmList;
